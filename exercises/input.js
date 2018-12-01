@@ -4,34 +4,45 @@ class Input{
 	//constructor takes in a a target input element
 	//should also construct variables for the range, the pattern, and the element that will hold the error message
 	//range min and max should default to null
-	constructor( ){
-
+	constructor( input, min=null, max=null ){
+		this.domElement = $(input);
+		this.value = this.domElement.val();
+		this.min = min;
+		this.max = max;
+		this.pattern = null;
+		this.element = null;
+		this.error = null;
 	}
 	//setRange sets the minimum and maximum range, if necessary, for the input
 	//arguments : min (a number), and max (a number)
 	//returns: nothing
 	//purpose: sets the min and max values for the object
-	setRange(  ){
-
+	setRange( min, max ){
+		this.min = min;
+		this.max = max;
 	}
 	//getRange gets the minimum and maximum range.
 	//arguments: nothing
 	//returns: an object with a property of min, and a property of max, containing the minimum and maximum numbers
 	getRange(){
-		
+		var range = {
+			min: this.min,
+			max: this.max
+		};
+		return range;
 	}
 	//setPattern saves a regex pattern into the object
 	//arguments: pattern (a regular expression.  if you don't know what it is, you will learn it soon)
 	//returns: nothing
 	//saves the given pattern into the object
-	setPattern(  ){
-		
+	setPattern( pattern ){
+		this.pattern = pattern;
 	}
 	//getPattern returns the currently stored pattern of the input object
 	//arguments: nothing
 	//returns: the currently stored regex pattern
 	getPattern(){
-		
+		return this.pattern;
 	}
 	//test runs all current tests on the target input and returns an object with data about whether the input passed or not
 	//arguments: nothing
@@ -51,6 +62,33 @@ class Input{
 			if it is not null, then test the range */
 	test(){
 
+		var isNumber = /^-?\d+$/.test(this.domElement.val())
+		var answer = null;
+
+		if(!this.pattern.test(this.domElement.val())) {
+			answer = {
+				result: false,
+				error: 'pattern'
+			}
+		} else if (isNumber && this.min !== null && this.max !== null) {
+			if(!(this.min <= parseInt(this.domElement.val()) && parseInt(this.domElement.val()) <=this.max)) {
+				answer = {
+					result: false,
+					error: 'range'
+				}
+			} else {
+				answer = {
+					result: true
+				}
+			}
+		} else {
+			answer = {
+				result: true
+			}
+		}
+
+		return answer; 
+
 	}
 	/*
 	showError: takes in a message, creates a dom element, and then positions that dom Element directly below the input
@@ -69,8 +107,11 @@ class Input{
 		MAKE SURE TO STORE the reference to the dom element in the object for later use!
 		Don't store the CSS selector, you made the element, store the direct dom object itself!
 		*/
-	showError(  ){
-
+	showError( message ){
+		var inputLocation = this.domElement.position();
+		var renderedDOM = $('<div>').css('position', 'absolute').css('left', inputLocation.left).css('top', inputLocation.top + 20).addClass('inputError').text(message);
+		this.domElement.parent().append(renderedDOM);
+		this.error = renderedDOM;
 	}
 	/*
 	hideError removes the error dom element from the DOM for the given input
@@ -80,6 +121,6 @@ class Input{
 		removes the dom element in question (https://www.w3schools.com/jquery/html_remove.asp)
 		*/
 	hideError(){
-		
+		this.error.remove();
 	}
 }

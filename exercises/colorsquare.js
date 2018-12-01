@@ -14,7 +14,15 @@ class ColorSquare{
 		you'll need to bind the handleClick method to this object:
 			this.handleClick = this.handleClick.bind(this)
 	*/
-	constructor( ){
+	constructor( colors, index, string ){
+		this.colors = colors;
+		this.class = string;
+		this.index = index;
+		this.dom = null;
+		this.rightDom = null;
+
+		this.handleClick = this.handleClick.bind(this);
+
 	}
 	/*setter function for the property neighbor
 	new, somewhat limited support: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/set
@@ -26,9 +34,12 @@ class ColorSquare{
 		make sure it only sets the neighbor if it is the right class constructor (https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/constructor)
 		if it is the right constructor, set the neightbor
 	*/
-	set neighbor(){
-
+	set neighbor( newNeighbor ){
+		if (this.constructor === newNeighbor.constructor) {
+				this.rightDom = newNeighbor;
+			}
 	}
+
 	/* getter function for the property neighbor
 	new, somewhat limited support: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/get
 	arguments: 
@@ -37,7 +48,7 @@ class ColorSquare{
 		this object's property of the neighbor to the right
 	*/
 	get neighbor(){
-
+		return this.rightDom;
 	}
 	/*
 	click handler for this dom element
@@ -55,7 +66,44 @@ class ColorSquare{
 		*/
 	handleClick(){
 
-	}
+
+		// if(this.rightDom) {
+		// 	this.index++;
+		// 	this.dom.css('background-color', this.colors[this.index]);
+		// 	this.rightDom.handleClick();
+		// } else {
+		// 	this.dom.css('background-color', this.colors[0]);
+		// 	this.index = 0;
+		// }
+
+
+		// if(this.rightDom) {
+		// 	this.index++;
+		// 	if(this.index === 4) {
+		// 		this.dom.css('background-color', this.colors[0])
+		// 		this.index = 0;
+		// 	}
+		// 	this.dom.css('background-color', this.colors[this.index]);
+		// 	this.rightDom.handleClick();
+		// } else {
+		// 	this.dom.css('background-color', this.colors[0]);
+		// 	this.index = 0;
+		// }
+
+			this.index++;
+			if(this.index === 4) {
+				this.dom.css('background-color', this.colors[0])
+				this.index = 0;
+			} else {
+				this.dom.css('background-color', this.colors[this.index]);
+			}
+
+			if(this.rightDom){
+			this.rightDom.handleClick();
+			}
+		} 
+
+
 	/*
 	change the color of the current element
 	arguments:
@@ -65,8 +113,8 @@ class ColorSquare{
 	notes:
 		changes the current object's dom element's backgound color to the argument color
 	*/
-	changeColor(  ){
-
+	changeColor( color ){
+		this.dom.css('background-color', color);
 	}
 	/*
 	render / generate the dom element for the current object 
@@ -82,6 +130,9 @@ class ColorSquare{
 		return the dom element that was generated. 
 	*/
 	render(){
+		var color = this.colors[this.index];
+		this.dom = $('<div>').addClass(this.class).click(this.handleClick).css('background-color', color);
 
+		return this.dom;
 	}
 }

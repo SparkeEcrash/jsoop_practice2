@@ -244,9 +244,14 @@ function inputTests_featureset2(){
 		displayMessage('Error with Input.showError, both inputs should show an error');
 		return false;
 	}
+	
 	if(testError[0].innerText!=='range' || testError[1].innerText !== 'pattern'){
 		displayMessage('input 1 error message should be "range" and input 2 error message should be "pattern", but got '+testError[0].innerText + ' and ' + testError[1].innerText + ' instead');
+		return false;
 	}
+
+
+
 	input.hideError();
 	testError = $(".inputError");
 	if(testError.length!==1){
